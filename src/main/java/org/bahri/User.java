@@ -23,6 +23,10 @@ public class User {
         this.totalBooks += amount;
     }
 
+    public void decreaseTotalBooks(Integer amount) {
+        this.totalBooks -= amount;
+    }
+
     @JsonCreator
     public User(@JsonProperty("name") String name,
                      @JsonProperty("email") String email,

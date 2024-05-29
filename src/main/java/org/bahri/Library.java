@@ -7,6 +7,7 @@ public class Library {
     protected ArrayList<Book> books = new ArrayList<>();
     protected ArrayList<Member> members = new ArrayList<>();
     protected User currentUser;
+    protected Book selectedBook;
 
     // CRUD - CREATE FUNCTIONS
     public void addUser(User user) {
@@ -23,9 +24,16 @@ public class Library {
         System.out.print("librario\\Amnt of book(s): ");
         Integer quantity = sc.nextInt();
 
-        this.books.add(new Book(title, writer, quantity, this.currentUser.currentBookIndex));
+        Book newBook = new Book(title, writer, quantity, this.currentUser.currentBookIndex);
+
+        this.books.add(newBook);
         this.currentUser.increaseCurrentBookIndex();
         this.currentUser.increaseTotalBooks(quantity);
+
+        System.out.println("--------------------------------");
+        System.out.println("Message: Successfully added new book:");
+        newBook.showsBookDetails();
+        System.out.println();
     }
 
     public void addBook(ArrayList<Book> books) {
@@ -40,9 +48,73 @@ public class Library {
 
         this.members.add(new Member(name, this.currentUser.currentMemberIndex));
         this.currentUser.increaseCurrentMemberIndex();
+
+        System.out.println("\nMESSAGE: SUCCESSFULLY ADDED NEW MEMBER!\n");
     }
 
     public void addMember(ArrayList<Member> members) {
         this.members.addAll(members);
+    }
+
+    // CRUD - DELETE BOOKS
+    public void removeBook() {
+        // make sure that there are books inside the list
+        if(this.books.isEmpty()) {
+            System.out.println("\n-----------------------------------");
+            System.out.println("There are no books on your shelf. Start by adding one.\n");
+            return;
+        }
+
+        Scanner sc = new Scanner(System.in);
+        System.out.print("librario\\Enter book ID: ");
+        Integer bookId = sc.nextInt();
+        sc.nextLine();
+
+        boolean isBookExist = false;
+        // check if the books exist
+        for (Book book : this.books) {
+            if(book.id.equals(bookId)) {
+                isBookExist = true;
+                this.selectedBook = book;
+                break;
+            }
+        }
+
+        // handle book id invalid or book does not exist
+        if(!isBookExist) {
+            System.out.println("--------------------------------");
+            System.out.println("Warning: There are no book with id " + bookId + "\n");
+            return;
+        }
+
+        System.out.println("-----------------------------------");
+        System.out.println("You are about to remove this book:");
+        this.selectedBook.showsBookDetails();
+        System.out.println();
+
+        System.out.print("librario\\Proceed? (Y|N) ");
+        String confirm = sc.nextLine().toLowerCase().trim();
+
+        if(confirm.equals("y")) {
+            try {
+                boolean removed = this.books.removeIf(book -> book.id.equals(bookId));
+                if(!removed) throw new Exception("There are no books with id: " + bookId);
+                else {
+                    this.currentUser.decreaseTotalBooks(this.selectedBook.quantity);
+                    System.out.println("\n-------------------------------");
+                    System.out.println("Successfully removed book:");
+                    this.selectedBook.showsBookDetails();
+                    System.out.println();
+                }
+            } catch(Exception e) {
+                System.out.println(e.getMessage());
+            }
+        } else {
+            System.out.println("--------------------------------");
+            System.out.println("Warning: Canceled book deletion!\n");
+        }
+
+        // clear selected book
+        this.selectedBook = null;
     }
 }

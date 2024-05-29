@@ -29,17 +29,12 @@ public class Main {
             switch (userCommand) {
                 case "add book":
                     library.addBook();
-
-                    // save progress to local storage
-                    dm.writeDataToLocaleStorage(library.currentUser, userPrefDatabasePath);
-                    dm.writeDataToLocaleStorage(library.books, bookDatabasePath);
                     break;
                 case "add member":
                     library.addMember();
-
-                    // save progress to local storage
-                    dm.writeDataToLocaleStorage(library.currentUser, userPrefDatabasePath);
-                    dm.writeDataToLocaleStorage(library.members, memberDatabasePath);
+                    break;
+                case "rm book":
+                    library.removeBook();
                     break;
                 case "close":
                     sc.close();
@@ -49,9 +44,14 @@ public class Main {
                     ah.showsAppMenu();
                     break;
                 default:
-                    System.out.println("librario\\ WARNING! UNDEFINED COMMAND.");
+                    System.out.println("\nlibrario\\ WARNING! UNDEFINED COMMAND.\nUse -h for help.\n");
                     break;
             }
+
+            // save progress to local storage
+            dm.writeDataToLocaleStorage(library.books, bookDatabasePath);
+            dm.writeDataToLocaleStorage(library.members, memberDatabasePath);
+            dm.writeDataToLocaleStorage(library.currentUser, userPrefDatabasePath);
         }
     }
 }
