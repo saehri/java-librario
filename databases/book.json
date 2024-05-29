@@ -1,1 +1,10 @@
-[ ]
+[ {
+  "id" : 2,
+  "quantity" : 20,
+  "borrowedCount" : 0,
+  "title" : "Three Body Problem",
+  "genre" : "Science fictions",
+  "year" : "2006",
+  "descriptions" : "",
+  "writer" : "Cixin Liu"
+} ]

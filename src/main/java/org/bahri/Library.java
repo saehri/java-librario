@@ -56,13 +56,92 @@ public class Library {
         this.members.addAll(members);
     }
 
-    // CRUD - DELETE BOOKS
+    // CRUD - EDIT FUNCTIONS
+    public void editBook() {
+        Integer bookId = findBookId();
+        Scanner sc = new Scanner(System.in);
+
+        if(bookId.equals(-1)) return;
+
+        System.out.println("-----------------------------------");
+        System.out.println("You are about to edit this book:");
+        this.selectedBook.showsBookDetails();
+        System.out.println();
+
+        System.out.print("librario\\Proceed? (Y|N) ");
+        String confirm = sc.nextLine().toLowerCase().trim();
+
+        if(confirm.equals("y") || confirm.equals("yes")) {
+            while(true) {
+                System.out.print("librario\\Which field do you want to edit? ");
+                String field = sc.nextLine();
+                System.out.print("librario\\Enter new data: ");
+                String newData = sc.nextLine();
+
+                this.selectedBook.editBookDetails(field, newData);
+
+                System.out.print("\nlibrario\\Edit another field? (Y|N) ");
+                String editAgain = sc.nextLine().toLowerCase().trim();
+
+                if(editAgain.isEmpty() || editAgain.equals("n") | editAgain.equals("no")) {
+                    System.out.println();
+                    return;
+                }
+            }
+        } else {
+            System.out.println("--------------------------------");
+            System.out.println("Warning: Canceled book editing!\n");
+        }
+
+        // clear selected book;
+        this.selectedBook = null;
+    }
+
+    // CRUD - DELETE FUNCTIONS
     public void removeBook() {
+        Integer bookId = findBookId();
+        Scanner sc = new Scanner(System.in);
+
+        if(bookId.equals(-1)) return;
+
+        System.out.println("-----------------------------------");
+        System.out.println("You are about to remove this book:");
+        this.selectedBook.showsBookDetails();
+        System.out.println();
+
+        System.out.print("librario\\Proceed? (Y|N) ");
+        String confirm = sc.nextLine().toLowerCase().trim();
+
+        if(confirm.equals("y") || confirm.equals("yes")) {
+            try {
+                boolean removed = this.books.removeIf(book -> book.id.equals(bookId));
+                if(!removed) throw new Exception("There are no books with id: " + bookId);
+                else {
+                    this.currentUser.decreaseTotalBooks(this.selectedBook.quantity);
+                    System.out.println("\n-------------------------------");
+                    System.out.println("Successfully removed book:");
+                    this.selectedBook.showsBookDetails();
+                    System.out.println();
+                }
+            } catch(Exception e) {
+                System.out.println(e.getMessage());
+            }
+        } else {
+            System.out.println("--------------------------------");
+            System.out.println("Warning: Canceled book deletion!\n");
+        }
+
+        // clear selected book
+        this.selectedBook = null;
+    }
+
+    // UTILS
+    public Integer findBookId() {
         // make sure that there are books inside the list
         if(this.books.isEmpty()) {
             System.out.println("\n-----------------------------------");
             System.out.println("There are no books on your shelf. Start by adding one.\n");
-            return;
+            return -1;
         }
 
         Scanner sc = new Scanner(System.in);
@@ -84,37 +163,9 @@ public class Library {
         if(!isBookExist) {
             System.out.println("--------------------------------");
             System.out.println("Warning: There are no book with id " + bookId + "\n");
-            return;
+            return -1;
         }
 
-        System.out.println("-----------------------------------");
-        System.out.println("You are about to remove this book:");
-        this.selectedBook.showsBookDetails();
-        System.out.println();
-
-        System.out.print("librario\\Proceed? (Y|N) ");
-        String confirm = sc.nextLine().toLowerCase().trim();
-
-        if(confirm.equals("y")) {
-            try {
-                boolean removed = this.books.removeIf(book -> book.id.equals(bookId));
-                if(!removed) throw new Exception("There are no books with id: " + bookId);
-                else {
-                    this.currentUser.decreaseTotalBooks(this.selectedBook.quantity);
-                    System.out.println("\n-------------------------------");
-                    System.out.println("Successfully removed book:");
-                    this.selectedBook.showsBookDetails();
-                    System.out.println();
-                }
-            } catch(Exception e) {
-                System.out.println(e.getMessage());
-            }
-        } else {
-            System.out.println("--------------------------------");
-            System.out.println("Warning: Canceled book deletion!\n");
-        }
-
-        // clear selected book
-        this.selectedBook = null;
+        return bookId;
     }
 }

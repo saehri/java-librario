@@ -36,6 +36,9 @@ public class Main {
                 case "rm book":
                     library.removeBook();
                     break;
+                case "edit book":
+                    library.editBook();
+                    break;
                 case "close":
                     sc.close();
                     System.out.println("Closing....");

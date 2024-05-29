@@ -35,6 +35,28 @@ public class Book {
         System.out.println("BorrowedCount: " + this.borrowedCount);
     }
 
+    public void editBookDetails(String field, String newData) {
+        switch(field){
+            case "title":
+                this.title = newData;
+                break;
+            case "description":
+                this.descriptions = newData;
+                break;
+            case "writer":
+                this.writer = newData;
+                break;
+            case "year":
+                this.year = newData;
+                break;
+            case "genre":
+                this.genre = newData;
+                break;
+            default:
+                System.out.println("You cannot modify this field directly: " + field);
+        }
+    }
+
     // Constructor with parameters - This code is used by the jackson library to properly
     // construct the json string to object
     @JsonCreator
