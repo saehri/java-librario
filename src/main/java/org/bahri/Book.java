@@ -53,7 +53,7 @@ public class Book {
                 this.genre = newData;
                 break;
             default:
-                System.out.println("You cannot modify this field directly: " + field);
+                System.out.println("You cannot modify this field: " + field);
         }
     }
 

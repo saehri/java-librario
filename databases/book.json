@@ -7,4 +7,13 @@
   "year" : "2006",
   "descriptions" : "",
   "writer" : "Cixin Liu"
+}, {
+  "id" : 3,
+  "quantity" : 50,
+  "borrowedCount" : 0,
+  "title" : "Atomic Habits",
+  "genre" : "Self-help",
+  "year" : "2018",
+  "descriptions" : "",
+  "writer" : "James Clear"
 } ]

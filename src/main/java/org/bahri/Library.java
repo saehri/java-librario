@@ -8,6 +8,7 @@ public class Library {
     protected ArrayList<Member> members = new ArrayList<>();
     protected User currentUser;
     protected Book selectedBook;
+    protected Member selectedMember;
 
     // CRUD - CREATE FUNCTIONS
     public void addUser(User user) {
@@ -46,14 +47,79 @@ public class Library {
         System.out.print("librario\\Name: ");
         String name = sc.nextLine();
 
-        this.members.add(new Member(name, this.currentUser.currentMemberIndex));
+        Member newMember = new Member(name, this.currentUser.currentMemberIndex);
+
+        this.members.add(newMember);
         this.currentUser.increaseCurrentMemberIndex();
 
-        System.out.println("\nMESSAGE: SUCCESSFULLY ADDED NEW MEMBER!\n");
+        System.out.println("--------------------------------");
+        System.out.println("Message: Successfully added new member:");
+        newMember.showsMemberDetail();
+        System.out.println();
     }
 
     public void addMember(ArrayList<Member> members) {
         this.members.addAll(members);
+    }
+
+    // CRUD - READ FUNCTIONS
+    public void showBooks() {
+        if(this.books.isEmpty()) {
+            System.out.println("\n-----------------------------------");
+            System.out.println("There are no books on your shelf. Start by adding one.\n");
+            return;
+        }
+
+        System.out.println("-------------------------------");
+        System.out.println("Books on your shelf:");
+
+        for(Book book : this.books) {
+            book.showsBookDetails();
+            System.out.println("----------------------------");
+        }
+        System.out.println();
+    }
+
+    public void showMember(String memberState) {
+        if(this.members.isEmpty()) {
+            System.out.println("\n-----------------------------------");
+            System.out.println("There are no registered member. Start by adding one.\n");
+            return;
+        }
+
+        System.out.println("-------------------------------");
+        System.out.println("Registered member:");
+
+        if(memberState.equals("all")) {
+            for(Member member : this.members) {
+                member.showsMemberDetail();
+                System.out.println("----------------------------");
+            }
+
+            System.out.println();
+            return;
+        }
+
+        if(memberState.equals("active")) {
+            for(Member member : this.members) {
+                if(member.isActive) {
+                    member.showsMemberDetail();
+                    System.out.println("----------------------------");
+                }
+            }
+
+            System.out.println();
+            return;
+        }
+
+        for(Member member : this.members) {
+            if(!member.isActive) {
+                member.showsMemberDetail();
+                System.out.println("----------------------------");
+            }
+        }
+
+        System.out.println();
     }
 
     // CRUD - EDIT FUNCTIONS
@@ -74,7 +140,7 @@ public class Library {
         if(confirm.equals("y") || confirm.equals("yes")) {
             while(true) {
                 System.out.print("librario\\Which field do you want to edit? ");
-                String field = sc.nextLine();
+                String field = sc.nextLine().toLowerCase().trim();
                 System.out.print("librario\\Enter new data: ");
                 String newData = sc.nextLine();
 
@@ -84,6 +150,9 @@ public class Library {
                 String editAgain = sc.nextLine().toLowerCase().trim();
 
                 if(editAgain.isEmpty() || editAgain.equals("n") | editAgain.equals("no")) {
+                    System.out.println("----------------------------");
+                    System.out.println("Edited book:");
+                    this.selectedBook.showsBookDetails();
                     System.out.println();
                     return;
                 }
@@ -91,6 +160,48 @@ public class Library {
         } else {
             System.out.println("--------------------------------");
             System.out.println("Warning: Canceled book editing!\n");
+        }
+
+        // clear selected book;
+        this.selectedBook = null;
+    }
+
+    public void editMember() {
+        Integer memberId = findMemberId();
+        Scanner sc = new Scanner(System.in);
+
+        if(memberId.equals(-1)) return;
+
+        System.out.println("-----------------------------------");
+        System.out.println("You are about to edit this member data:");
+        this.selectedMember.showsMemberDetail();
+        System.out.println();
+
+        System.out.print("librario\\Proceed? (Y|N) ");
+        String confirm = sc.nextLine().toLowerCase().trim();
+
+        if(confirm.equals("y") || confirm.equals("yes")) {
+            while(true) {
+                System.out.print("librario\\Which field do you want to edit? ");
+                String field = sc.nextLine().toLowerCase().trim();
+                System.out.print("librario\\Enter new data: ");
+                String newData = sc.nextLine();
+
+                this.selectedMember.editMemberDetail(field, newData);
+                System.out.print("\nlibrario\\Edit another field? (Y|N) ");
+                String editAgain = sc.nextLine().toLowerCase().trim();
+
+                if(editAgain.isEmpty() || editAgain.equals("n") | editAgain.equals("no")) {
+                    System.out.println("----------------------------");
+                    System.out.println("Edited member:");
+                    this.selectedMember.showsMemberDetail();
+                    System.out.println();
+                    return;
+                }
+            }
+        } else {
+            System.out.println("--------------------------------");
+            System.out.println("Warning: Canceled member editing!\n");
         }
 
         // clear selected book;
@@ -135,6 +246,34 @@ public class Library {
         this.selectedBook = null;
     }
 
+    public void removeMember() {
+        Integer memberId = findMemberId();
+        Scanner sc = new Scanner(System.in);
+
+        if(memberId.equals(-1)) return;
+
+        System.out.println("-----------------------------------");
+        System.out.println("You are about to remove this member:");
+        this.selectedMember.showsMemberDetail();
+        System.out.println();
+
+        System.out.print("librario\\Proceed? (Y|N) ");
+        String confirm = sc.nextLine().toLowerCase().trim();
+
+        if(confirm.equals("y") || confirm.equals("yes")) {
+            this.selectedMember.deactivate();
+            System.out.println("--------------------------------");
+            System.out.println("Message: Successfully removed member:");
+            this.selectedMember.showsMemberDetail();
+        } else {
+            System.out.println("--------------------------------");
+            System.out.println("Warning: Canceled book deletion!\n");
+        }
+
+        // clear selected member
+        this.selectedMember = null;
+    }
+
     // UTILS
     public Integer findBookId() {
         // make sure that there are books inside the list
@@ -167,5 +306,38 @@ public class Library {
         }
 
         return bookId;
+    }
+
+    public Integer findMemberId() {
+        // make sure that there are books inside the list
+        if(this.members.isEmpty()) {
+            System.out.println("\n-----------------------------------");
+            System.out.println("There are no members registered. Start by adding one.\n");
+            return -1;
+        }
+
+        Scanner sc = new Scanner(System.in);
+        System.out.print("librario\\Enter member ID: ");
+        Integer memberId = sc.nextInt();
+        sc.nextLine();
+
+        boolean isMemberExist = false;
+        // check if the books exist
+        for (Member member : this.members) {
+            if(member.id.equals(memberId)) {
+                isMemberExist = true;
+                this.selectedMember = member;
+                break;
+            }
+        }
+
+        // handle book id invalid or book does not exist
+        if(!isMemberExist) {
+            System.out.println("--------------------------------");
+            System.out.println("Warning: There are no member with id " + memberId + "\n");
+            return -1;
+        }
+
+        return memberId;
     }
 }

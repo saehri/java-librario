@@ -33,8 +33,26 @@ public class Main {
                 case "add member":
                     library.addMember();
                     break;
+                case "show book":
+                    library.showBooks();
+                    break;
+                case "show member":
+                    library.showMember("active");
+                    break;
+                case "show member all":
+                    library.showMember("all");
+                    break;
+                case "show member inactive only":
+                    library.showMember("inactive");
+                    break;
+                case "edit member":
+                    library.editMember();
+                    break;
                 case "rm book":
                     library.removeBook();
+                    break;
+                case "rm member":
+                    library.removeMember();
                     break;
                 case "edit book":
                     library.editBook();

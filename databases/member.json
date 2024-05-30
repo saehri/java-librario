@@ -1,8 +1,25 @@
 [ {
-  "id" : 1,
+  "id" : 3,
+  "name" : "Saepul Bahri",
+  "borrowing" : [ ],
+  "email" : "",
+  "address" : "",
+  "isActive" : false,
+  "phoneNumber" : ""
+}, {
+  "id" : 4,
   "name" : "James Clear",
   "borrowing" : [ ],
   "email" : "",
   "address" : "",
+  "isActive" : false,
+  "phoneNumber" : ""
+}, {
+  "id" : 5,
+  "name" : "M Fahraz Firdaus",
+  "borrowing" : [ ],
+  "email" : "",
+  "address" : "",
+  "isActive" : true,
   "phoneNumber" : ""
 } ]
