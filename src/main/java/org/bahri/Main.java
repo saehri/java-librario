@@ -19,9 +19,14 @@ public class Main {
         // sync local state
         library.addBook(dm.readListDataFromLocaleStorage(bookDatabasePath, Book.class));
         library.addMember(dm.readListDataFromLocaleStorage(memberDatabasePath, Member.class));
-        library.addTransaction(dm.readListDataFromLocaleStorage(transactionDatabasePath, Transaction.class));
+        library.addRentingEntry(dm.readListDataFromLocaleStorage(transactionDatabasePath, RentingEntry.class));
         library.addUser(dm.readDataFromLocaleStorage(userPrefDatabasePath, User.class));
         // -------------- END OF SYNCING PROCESS
+
+        System.out.println("----------------------------");
+        System.out.println("    WELCOME TO LIBRARIO     ");
+        System.out.println("----------------------------");
+        System.out.println("enter -h for help.");
 
         while (true) {
             // handle user commands
@@ -47,17 +52,24 @@ public class Main {
                 case "show member inactive only":
                     library.showMember("inactive");
                     break;
+                case "edit book":
+                    library.editBook();
+                    break;
                 case "edit member":
                     library.editMember();
                     break;
                 case "rm book":
                     library.removeBook();
                     break;
+                case "member deactivate":
                 case "rm member":
                     library.removeMember();
                     break;
-                case "edit book":
-                    library.editBook();
+                case "rent":
+                    library.addRentingEntry();
+                    break;
+                case "reset library":
+                    library.resetLibrary();
                     break;
                 case "close":
                     sc.close();
@@ -75,7 +87,7 @@ public class Main {
             dm.writeDataToLocaleStorage(library.books, bookDatabasePath);
             dm.writeDataToLocaleStorage(library.members, memberDatabasePath);
             dm.writeDataToLocaleStorage(library.currentUser, userPrefDatabasePath);
-            dm.writeDataToLocaleStorage(library.transactions, transactionDatabasePath);
+            dm.writeDataToLocaleStorage(library.rentingEntryList, transactionDatabasePath);
         }
     }
 }

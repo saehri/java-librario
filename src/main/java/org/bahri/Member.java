@@ -53,6 +53,10 @@ public class Member {
         this.isActive = false;
     }
 
+    public void activate() {
+        this.isActive = true;
+    }
+
     // Constructor with parameters - This code is used by the jackson library to properly
     // construct the json string to object
     @JsonCreator

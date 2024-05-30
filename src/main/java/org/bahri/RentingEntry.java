@@ -5,14 +5,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
 
-public class Transaction {
+public class RentingEntry {
     public Integer id;
     public ArrayList<Integer> bookId;
     public String dueDate;
     public Integer memberId;
     public Member member;
 
-    public Transaction(Integer id, String dueDate, Member member, ArrayList<Integer> bookId) {
+    public RentingEntry(Integer id, String dueDate, Member member, ArrayList<Integer> bookId) {
         this.id = id;
         this.bookId = bookId;
         this.member = member;
@@ -20,7 +20,7 @@ public class Transaction {
         this.dueDate = dueDate;
     }
 
-    public void showTransactionDetails() {
+    public void showRentingDetails() {
         System.out.println("ID: " + this.id);
         System.out.println("Due date: " + this.dueDate);
         System.out.println("Member ID: " + this.memberId);
@@ -32,11 +32,11 @@ public class Transaction {
     // Constructor with parameters - This code is used by the jackson library to properly
     // construct the json string to object
     @JsonCreator
-    public Transaction(@JsonProperty("id") Integer id,
-                  @JsonProperty("bookId") ArrayList<Integer> bookId,
-                  @JsonProperty("dueDate") String dueDate,
-                  @JsonProperty("memberId") Integer memberId,
-                  @JsonProperty("member") Member member) {
+    public RentingEntry(@JsonProperty("id") Integer id,
+                        @JsonProperty("bookId") ArrayList<Integer> bookId,
+                        @JsonProperty("dueDate") String dueDate,
+                        @JsonProperty("memberId") Integer memberId,
+                        @JsonProperty("member") Member member) {
         this.id = id;
         this.bookId = bookId;
         this.dueDate = dueDate;

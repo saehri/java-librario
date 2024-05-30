@@ -6,12 +6,13 @@ import java.util.Scanner;
 public class Library {
     protected ArrayList<Book> books = new ArrayList<>();
     protected ArrayList<Member> members = new ArrayList<>();
-    protected ArrayList<Transaction> transactions = new ArrayList<>();
+    protected ArrayList<RentingEntry> rentingEntryList = new ArrayList<>();
     protected User currentUser;
     protected Book selectedBook;
     protected Member selectedMember;
 
     // CRUD - CREATE FUNCTIONS
+
     public void addUser(User user) {
         this.currentUser = user;
     }
@@ -45,7 +46,7 @@ public class Library {
     public void addMember() {
         Scanner sc = new Scanner(System.in);
 
-        System.out.print("librario\\Name: ");
+        System.out.print("librario\\Enter member name: ");
         String name = sc.nextLine();
 
         Member newMember = new Member(name, this.currentUser.currentMemberId);
@@ -63,50 +64,76 @@ public class Library {
         this.members.addAll(members);
     }
 
-    public void addTransaction() {
+    public void addRentingEntry() {
         Scanner sc = new Scanner(System.in);
 
-        Integer memberId = findMember();
-
-        if(memberId == -1) return;
-        ArrayList<Integer> borrowedBookId = new ArrayList<>();
-        ArrayList<Book> borrowedBook = new ArrayList<>();
-
-        while (true) {
-            findBook();
-            borrowedBookId.add(this.selectedBook.id);
-            borrowedBook.add(this.selectedBook);
-            System.out.print("librario\\Add next? (Y|N): ");
-            String continueAdd = sc.nextLine().toLowerCase().trim();
-
-            if(!(continueAdd.equals("y") || continueAdd.equals("yes"))) break;
+        Integer memberId = -1;
+        while(memberId == -1) {
+            memberId = findMember();
         }
 
+        if(!this.selectedMember.isActive) {
+            System.out.println("--------------------------------");
+            System.out.println("Message: This is inactive member. You need to activate for this actions.");
+            this.selectedMember.showsMemberDetail();
+            System.out.println();
+            return;
+        }
 
-        System.out.print("librario\\Enter due date: ");
-        String dueDate = sc.nextLine();
+        // make sure that member can rent several books at the same time
+        // thus why we use while loop
+        ArrayList<Integer> rentedBooks = new ArrayList<>();
 
-        Transaction newTransaction = new Transaction(
-                this.currentUser.currentTransactionId,
-                dueDate,
-                this.selectedMember,
-                borrowedBookId);
-        this.transactions.add(newTransaction);
+        while (true) {
+            Integer bookId = findBook();
 
-        System.out.println("--------------------------------");
-        System.out.println("Message: Successfully added new transaction:");
-        newTransaction.showTransactionDetails();
-        System.out.println();
+            if(bookId != -1) { // make sure that the book is existed
+                boolean isCanRent = (this.selectedBook.rentedBookCount + 1) <= this.selectedBook.quantity;
+
+                if(isCanRent) {
+                    this.selectedBook.increaseRentedBokCount(1);
+                    rentedBooks.add(this.selectedBook.id);
+
+                    System.out.print("librario\\Add next? (Y|N): ");
+                    String continueAdd = sc.nextLine().toLowerCase().trim();
+
+                    if(!(continueAdd.equals("y") || continueAdd.equals("yes"))) break;
+                } else {
+                    System.out.println("--------------------------------");
+                    System.out.println("Message: You can't rent this book. Because the books");
+                    System.out.println("are fully rented.\n");
+                    break;
+                }
+            }
+        }
+
+        if(!rentedBooks.isEmpty()) {
+            System.out.print("librario\\Enter due date: ");
+            String dueDate = sc.nextLine();
+
+            RentingEntry newRentingEntry = new RentingEntry(
+                    this.currentUser.currentBookRentingId,
+                    dueDate,
+                    this.selectedMember,
+                    rentedBooks);
+            this.rentingEntryList.add(newRentingEntry);
+            this.currentUser.increaseCurrentBookRentingId();
+
+            System.out.println("--------------------------------");
+            System.out.println("Message: Successfully added new transaction:");
+            newRentingEntry.showRentingDetails();
+            System.out.println();
+        }
     }
 
-    public void addTransaction(ArrayList<Transaction> transactions) {
-        this.transactions.addAll(transactions);
+    public void addRentingEntry(ArrayList<RentingEntry> rentingEntries) {
+        this.rentingEntryList.addAll(rentingEntries);
     }
 
     // CRUD - READ FUNCTIONS
     public void showBooks() {
         if(this.books.isEmpty()) {
-            System.out.println("\n-----------------------------------");
+            System.out.println("-----------------------------------");
             System.out.println("There are no books on your shelf. Start by adding one.\n");
             return;
         }
@@ -123,7 +150,7 @@ public class Library {
 
     public void showMember(String memberState) {
         if(this.members.isEmpty()) {
-            System.out.println("\n-----------------------------------");
+            System.out.println("-----------------------------------");
             System.out.println("There are no registered member. Start by adding one.\n");
             return;
         }
@@ -306,6 +333,7 @@ public class Library {
             System.out.println("--------------------------------");
             System.out.println("Message: Successfully removed member:");
             this.selectedMember.showsMemberDetail();
+            System.out.println();
         } else {
             System.out.println("--------------------------------");
             System.out.println("Warning: Canceled book deletion!\n");
@@ -380,5 +408,33 @@ public class Library {
         }
 
         return memberId;
+    }
+
+    public void resetLibrary() {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("---------------------------------------------");
+        System.out.println("Warning: You are about to reset your library.");
+        System.out.println("all saved data will be removed.");
+        System.out.print("librario\\Proceed (Y|N)? ");
+        String confirm = sc.nextLine().toLowerCase().trim();
+
+        if(confirm.equals("y") || confirm.equals("yes")) {
+            this.books = new ArrayList<>();
+            this.members = new ArrayList<>();
+            this.rentingEntryList = new ArrayList<>();
+            this.selectedMember = null;
+            this.selectedBook = null;
+
+            this.currentUser.totalBooks = 0;
+            this.currentUser.currentBookId = 0;
+            this.currentUser.currentMemberId = 0;
+            this.currentUser.currentBookRentingId = 0;
+
+            System.out.println("------------------------------------");
+            System.out.println("Message: Library successfully cleared.\n");
+        } else {
+            System.out.println("------------------------------------");
+            System.out.println("Message: Canceled resetting library.\n");
+        }
     }
 }

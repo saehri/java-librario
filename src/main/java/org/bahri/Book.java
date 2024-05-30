@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class Book {
     public Integer id;
     public Integer quantity;
-    public Integer borrowedCount;
+    public Integer rentedBookCount;
     public String title;
     public String genre;
     public String descriptions;
@@ -19,9 +19,13 @@ public class Book {
         this.writer = writer;
         this.quantity = quantity;
         this.genre = "";
-        this.borrowedCount = 0;
+        this.rentedBookCount = 0;
         this.descriptions = "";
         this.year = "";
+    }
+
+    public void increaseRentedBokCount(Integer amount) {
+        this.rentedBookCount += amount;
     }
 
     public void showsBookDetails() {
@@ -32,7 +36,7 @@ public class Book {
         System.out.println("Genre: " + this.genre);
         System.out.println("Year: " + this.year);
         System.out.println("Quantity: " + this.quantity);
-        System.out.println("BorrowedCount: " + this.borrowedCount);
+        System.out.println("BorrowedCount: " + this.rentedBookCount);
     }
 
     public void editBookDetails(String field, String newData) {
@@ -62,14 +66,14 @@ public class Book {
     @JsonCreator
     public Book(@JsonProperty("id") int id,
                 @JsonProperty("quantity") int quantity,
-                @JsonProperty("borrowedCount") int borrowedCount,
+                @JsonProperty("borrowedCount") int rentedBookCount,
                 @JsonProperty("title") String title,
                 @JsonProperty("genre") String genre,
                 @JsonProperty("year") String year,
                 @JsonProperty("descriptions") String descriptions) {
         this.id = id;
         this.quantity = quantity;
-        this.borrowedCount = borrowedCount;
+        this.rentedBookCount = rentedBookCount;
         this.title = title;
         this.genre = genre;
         this.year = year;

@@ -2,8 +2,8 @@
   "name" : "Saepul Bahri",
   "email" : "bahreesaepul1@gmail.com",
   "organizations" : "librario",
-  "totalBooks" : 70,
-  "currentTransactionId": 0,
-  "currentBookId" : 4,
-  "currentMemberId" : 6
+  "totalBooks" : 0,
+  "currentBookId" : 0,
+  "currentMemberId" : 0,
+  "currentBookRentingId" : 0
 }

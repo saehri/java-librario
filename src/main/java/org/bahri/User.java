@@ -9,7 +9,7 @@ public class User {
     public String organizations;
     public Integer currentBookId;
     public Integer currentMemberId;
-    public Integer currentTransactionId;
+    public Integer currentBookRentingId;
     public Integer totalBooks;
 
     public void increaseCurrentBookIndex() {
@@ -18,6 +18,10 @@ public class User {
 
     public void increaseCurrentMemberIndex() {
         this.currentMemberId += 1;
+    }
+
+    public void increaseCurrentBookRentingId() {
+        this.currentBookRentingId += 1;
     }
 
     public void increaseTotalBooks(Integer amount) {
