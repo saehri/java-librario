@@ -8,6 +8,7 @@ public class Main {
         String bookDatabasePath = "databases/book.json";
         String memberDatabasePath = "databases/member.json";
         String userPrefDatabasePath = "databases/user-data.json";
+        String transactionDatabasePath = "databases/transaction.json";
 
         // Initialize all app components and state
         Library library = new Library();
@@ -18,6 +19,7 @@ public class Main {
         // sync local state
         library.addBook(dm.readListDataFromLocaleStorage(bookDatabasePath, Book.class));
         library.addMember(dm.readListDataFromLocaleStorage(memberDatabasePath, Member.class));
+        library.addTransaction(dm.readListDataFromLocaleStorage(transactionDatabasePath, Transaction.class));
         library.addUser(dm.readDataFromLocaleStorage(userPrefDatabasePath, User.class));
         // -------------- END OF SYNCING PROCESS
 
@@ -73,6 +75,7 @@ public class Main {
             dm.writeDataToLocaleStorage(library.books, bookDatabasePath);
             dm.writeDataToLocaleStorage(library.members, memberDatabasePath);
             dm.writeDataToLocaleStorage(library.currentUser, userPrefDatabasePath);
+            dm.writeDataToLocaleStorage(library.transactions, transactionDatabasePath);
         }
     }
 }

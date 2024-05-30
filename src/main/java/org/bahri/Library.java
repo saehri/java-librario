@@ -6,6 +6,7 @@ import java.util.Scanner;
 public class Library {
     protected ArrayList<Book> books = new ArrayList<>();
     protected ArrayList<Member> members = new ArrayList<>();
+    protected ArrayList<Transaction> transactions = new ArrayList<>();
     protected User currentUser;
     protected Book selectedBook;
     protected Member selectedMember;
@@ -25,7 +26,7 @@ public class Library {
         System.out.print("librario\\Amnt of book(s): ");
         Integer quantity = sc.nextInt();
 
-        Book newBook = new Book(title, writer, quantity, this.currentUser.currentBookIndex);
+        Book newBook = new Book(title, writer, quantity, this.currentUser.currentBookId);
 
         this.books.add(newBook);
         this.currentUser.increaseCurrentBookIndex();
@@ -47,7 +48,7 @@ public class Library {
         System.out.print("librario\\Name: ");
         String name = sc.nextLine();
 
-        Member newMember = new Member(name, this.currentUser.currentMemberIndex);
+        Member newMember = new Member(name, this.currentUser.currentMemberId);
 
         this.members.add(newMember);
         this.currentUser.increaseCurrentMemberIndex();
@@ -60,6 +61,47 @@ public class Library {
 
     public void addMember(ArrayList<Member> members) {
         this.members.addAll(members);
+    }
+
+    public void addTransaction() {
+        Scanner sc = new Scanner(System.in);
+
+        Integer memberId = findMember();
+
+        if(memberId == -1) return;
+        ArrayList<Integer> borrowedBookId = new ArrayList<>();
+        ArrayList<Book> borrowedBook = new ArrayList<>();
+
+        while (true) {
+            findBook();
+            borrowedBookId.add(this.selectedBook.id);
+            borrowedBook.add(this.selectedBook);
+            System.out.print("librario\\Add next? (Y|N): ");
+            String continueAdd = sc.nextLine().toLowerCase().trim();
+
+            if(!(continueAdd.equals("y") || continueAdd.equals("yes"))) break;
+        }
+
+
+        System.out.print("librario\\Enter due date: ");
+        String dueDate = sc.nextLine();
+
+        Transaction newTransaction = new Transaction(
+                this.currentUser.currentTransactionId,
+                dueDate,
+                this.selectedMember,
+                borrowedBookId,
+                borrowedBook);
+        this.transactions.add(newTransaction);
+
+        System.out.println("--------------------------------");
+        System.out.println("Message: Successfully added new transaction:");
+        newTransaction.showTransactionDetails();
+        System.out.println();
+    }
+
+    public void addTransaction(ArrayList<Transaction> transactions) {
+        this.transactions.addAll(transactions);
     }
 
     // CRUD - READ FUNCTIONS
@@ -124,7 +166,7 @@ public class Library {
 
     // CRUD - EDIT FUNCTIONS
     public void editBook() {
-        Integer bookId = findBookId();
+        Integer bookId = findBook();
         Scanner sc = new Scanner(System.in);
 
         if(bookId.equals(-1)) return;
@@ -167,7 +209,7 @@ public class Library {
     }
 
     public void editMember() {
-        Integer memberId = findMemberId();
+        Integer memberId = findMember();
         Scanner sc = new Scanner(System.in);
 
         if(memberId.equals(-1)) return;
@@ -210,7 +252,7 @@ public class Library {
 
     // CRUD - DELETE FUNCTIONS
     public void removeBook() {
-        Integer bookId = findBookId();
+        Integer bookId = findBook();
         Scanner sc = new Scanner(System.in);
 
         if(bookId.equals(-1)) return;
@@ -247,7 +289,7 @@ public class Library {
     }
 
     public void removeMember() {
-        Integer memberId = findMemberId();
+        Integer memberId = findMember();
         Scanner sc = new Scanner(System.in);
 
         if(memberId.equals(-1)) return;
@@ -275,7 +317,7 @@ public class Library {
     }
 
     // UTILS
-    public Integer findBookId() {
+    public Integer findBook() {
         // make sure that there are books inside the list
         if(this.books.isEmpty()) {
             System.out.println("\n-----------------------------------");
@@ -308,7 +350,7 @@ public class Library {
         return bookId;
     }
 
-    public Integer findMemberId() {
+    public Integer findMember() {
         // make sure that there are books inside the list
         if(this.members.isEmpty()) {
             System.out.println("\n-----------------------------------");

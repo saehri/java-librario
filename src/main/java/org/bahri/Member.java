@@ -7,7 +7,6 @@ import java.util.ArrayList;
 public class Member {
     public Integer id;
     public String name;
-    public ArrayList<Book> borrowing = new ArrayList<>();
     public String email;
     public String phoneNumber;
     public String address;
@@ -25,7 +24,6 @@ public class Member {
     public void showsMemberDetail() {
         System.out.println("ID: " + this.id);
         System.out.println("Name: " + this.name);
-        System.out.println("Borrowing: " + this.borrowing.toString());
         System.out.println("Email: " + this.email);
         System.out.println("Phone number: " + this.phoneNumber);
         System.out.println("Active: " + this.isActive);
@@ -67,7 +65,6 @@ public class Member {
                   @JsonProperty("phoneNumber") String phoneNumber) {
         this.id = id;
         this.name = name;
-        this.borrowing = borrowing;
         this.email = email;
         this.address = address;
         this.phoneNumber = phoneNumber;

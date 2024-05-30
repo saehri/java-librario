@@ -61,7 +61,6 @@ public class Book {
     // construct the json string to object
     @JsonCreator
     public Book(@JsonProperty("id") int id,
-                @JsonProperty("queryId") int queryId,
                 @JsonProperty("quantity") int quantity,
                 @JsonProperty("borrowedCount") int borrowedCount,
                 @JsonProperty("title") String title,

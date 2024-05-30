@@ -3,6 +3,7 @@
   "email" : "bahreesaepul1@gmail.com",
   "organizations" : "librario",
   "totalBooks" : 70,
-  "currentBookIndex" : 4,
-  "currentMemberIndex" : 6
+  "currentTransactionId": 0,
+  "currentBookId" : 4,
+  "currentMemberId" : 6
 }

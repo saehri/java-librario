@@ -7,16 +7,17 @@ public class User {
     public String name;
     public String email;
     public String organizations;
-    public Integer currentBookIndex;
-    public Integer currentMemberIndex;
+    public Integer currentBookId;
+    public Integer currentMemberId;
+    public Integer currentTransactionId;
     public Integer totalBooks;
 
     public void increaseCurrentBookIndex() {
-        this.currentBookIndex += 1;
+        this.currentBookId += 1;
     }
 
     public void increaseCurrentMemberIndex() {
-        this.currentMemberIndex += 1;
+        this.currentMemberId += 1;
     }
 
     public void increaseTotalBooks(Integer amount) {
@@ -32,13 +33,13 @@ public class User {
                      @JsonProperty("email") String email,
                      @JsonProperty("organizations") String organizations,
                      @JsonProperty("totalBooks") int totalBooks,
-                     @JsonProperty("currentBookIndex") int currentBookIndex,
-                     @JsonProperty("currentMemberIndex") int currentMemberIndex) {
+                     @JsonProperty("currentBookIndex") int currentBookId,
+                     @JsonProperty("currentMemberIndex") int currentMemberId) {
         this.name = name;
         this.email = email;
         this.organizations = organizations;
-        this.currentBookIndex = currentBookIndex;
+        this.currentBookId = currentBookId;
         this.totalBooks = totalBooks;
-        this.currentMemberIndex = currentMemberIndex;
+        this.currentMemberId = currentMemberId;
     }
 }
