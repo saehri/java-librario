@@ -58,7 +58,6 @@ public class Member {
     @JsonCreator
     public Member(@JsonProperty("id") Integer id,
                   @JsonProperty("name") String name,
-                  @JsonProperty("borrowing") ArrayList<Book> borrowing,
                   @JsonProperty("email") String email,
                   @JsonProperty("address") String address,
                   @JsonProperty("isActive") boolean isActive,

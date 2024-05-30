@@ -90,8 +90,7 @@ public class Library {
                 this.currentUser.currentTransactionId,
                 dueDate,
                 this.selectedMember,
-                borrowedBookId,
-                borrowedBook);
+                borrowedBookId);
         this.transactions.add(newTransaction);
 
         System.out.println("--------------------------------");

@@ -11,7 +11,6 @@ public class Transaction {
     public String dueDate;
     public Integer memberId;
     public Member member;
-    public Integer quantity;
 
     public Transaction(Integer id, String dueDate, Member member, ArrayList<Integer> bookId) {
         this.id = id;
@@ -28,10 +27,6 @@ public class Transaction {
         System.out.println("Member name: " + this.member.name);
         System.out.println("Member email: " + this.member.email);
         System.out.println("-----------------------------------");
-        for(Book book: this.books) {
-            System.out.println("Book title: " + book.title);
-
-        }
     }
 
     // Constructor with parameters - This code is used by the jackson library to properly
@@ -41,13 +36,11 @@ public class Transaction {
                   @JsonProperty("bookId") ArrayList<Integer> bookId,
                   @JsonProperty("dueDate") String dueDate,
                   @JsonProperty("memberId") Integer memberId,
-                  @JsonProperty("member") Member member,
-                  @JsonProperty("books") ArrayList<Book> books) {
+                  @JsonProperty("member") Member member) {
         this.id = id;
         this.bookId = bookId;
         this.dueDate = dueDate;
         this.memberId = memberId;
         this.member = member;
-        this.books = books;
     }
 }
