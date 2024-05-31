@@ -5,11 +5,12 @@ import java.util.Scanner;
 
 public class Library {
     protected ArrayList<Book> books = new ArrayList<>();
-    protected ArrayList<Member> members = new ArrayList<>();
+    protected ArrayList<Member> rentEntryList = new ArrayList<>();
     protected ArrayList<RentingEntry> rentingEntryList = new ArrayList<>();
     protected User currentUser;
     protected Book selectedBook;
     protected Member selectedMember;
+    protected RentingEntry selectedRentEntry;
 
     // CRUD - CREATE FUNCTIONS
 
@@ -51,7 +52,7 @@ public class Library {
 
         Member newMember = new Member(name, this.currentUser.currentMemberId);
 
-        this.members.add(newMember);
+        this.rentEntryList.add(newMember);
         this.currentUser.increaseCurrentMemberIndex();
 
         System.out.println("--------------------------------");
@@ -61,10 +62,17 @@ public class Library {
     }
 
     public void addMember(ArrayList<Member> members) {
-        this.members.addAll(members);
+        this.rentEntryList.addAll(members);
     }
 
     public void addRentingEntry() {
+        if(this.rentEntryList.isEmpty() || this.books.isEmpty()) {
+            System.out.println("---------------------------------------");
+            System.out.println("Warning: Could not do this operation on empty database.");
+            System.out.println();
+            return;
+        }
+
         Scanner sc = new Scanner(System.in);
 
         Integer memberId = -1;
@@ -84,7 +92,7 @@ public class Library {
         // thus why we use while loop
         ArrayList<Integer> rentedBooks = new ArrayList<>();
 
-        while (true) {
+        while (!this.books.isEmpty()) {
             Integer bookId = findBook();
 
             if(bookId != -1) { // make sure that the book is existed
@@ -120,7 +128,7 @@ public class Library {
             this.currentUser.increaseCurrentBookRentingId();
 
             System.out.println("--------------------------------");
-            System.out.println("Message: Successfully added new transaction:");
+            System.out.println("Message: Successfully added new renting entry:");
             newRentingEntry.showRentingDetails();
             System.out.println();
         }
@@ -149,7 +157,7 @@ public class Library {
     }
 
     public void showMember(String memberState) {
-        if(this.members.isEmpty()) {
+        if(this.rentEntryList.isEmpty()) {
             System.out.println("-----------------------------------");
             System.out.println("There are no registered member. Start by adding one.\n");
             return;
@@ -159,7 +167,7 @@ public class Library {
         System.out.println("Registered member:");
 
         if(memberState.equals("all")) {
-            for(Member member : this.members) {
+            for(Member member : this.rentEntryList) {
                 member.showsMemberDetail();
                 System.out.println("----------------------------");
             }
@@ -169,7 +177,7 @@ public class Library {
         }
 
         if(memberState.equals("active")) {
-            for(Member member : this.members) {
+            for(Member member : this.rentEntryList) {
                 if(member.isActive) {
                     member.showsMemberDetail();
                     System.out.println("----------------------------");
@@ -180,7 +188,7 @@ public class Library {
             return;
         }
 
-        for(Member member : this.members) {
+        for(Member member : this.rentEntryList) {
             if(!member.isActive) {
                 member.showsMemberDetail();
                 System.out.println("----------------------------");
@@ -188,6 +196,62 @@ public class Library {
         }
 
         System.out.println();
+    }
+
+    public void showRentingEntry() {
+        if(this.books.isEmpty()) {
+            System.out.println("-----------------------------------");
+            System.out.println("There are no renting entry. Start by adding one.\n");
+            return;
+        }
+
+        System.out.println("-------------------------------");
+        System.out.println("Showing all active (not returned) entry: \n");
+
+        for(RentingEntry re : this.rentingEntryList) {
+            if(!re.returned) {
+                System.out.println("-------------------------------");
+                re.showRentingDetails();
+                System.out.println("-----");
+
+                System.out.println("📚 Rented books:\n");
+                for(int i = 0; i < re.bookId.size(); i++) {
+                    Book book = findBookById(re.bookId.get(i));
+                    System.out.println("ID: " + book.id);
+                    System.out.println("Title: " + book.title);
+                    System.out.println("Writer: " + book.writer);
+                    if(i + 1 < re.bookId.size()) System.out.println("--------");
+                }
+                System.out.println("-------------------------------");
+            }
+        }
+    }
+
+    public void showRentingEntry(boolean showAll) {
+        if(this.books.isEmpty()) {
+            System.out.println("-----------------------------------");
+            System.out.println("There are no renting entry. Start by adding one.\n");
+            return;
+        }
+
+        System.out.println("-------------------------------");
+        System.out.println("There are " + this.rentingEntryList.size() + " entry: \n");
+
+        for(RentingEntry re : this.rentingEntryList) {
+            System.out.println("-------------------------------");
+            re.showRentingDetails();
+            System.out.println("-----");
+
+            System.out.println("Rented books:\n");
+            for(int i = 0; i < re.bookId.size(); i++) {
+                Book book = findBookById(re.bookId.get(i));
+                System.out.println("ID: " + book.id);
+                System.out.println("Title: " + book.title);
+                System.out.println("Writer: " + book.writer);
+                if(i + 1 < re.bookId.size()) System.out.println("--------");
+            }
+            System.out.println("-------------------------------");
+        }
     }
 
     // CRUD - EDIT FUNCTIONS
@@ -336,18 +400,73 @@ public class Library {
             System.out.println();
         } else {
             System.out.println("--------------------------------");
-            System.out.println("Warning: Canceled book deletion!\n");
+            System.out.println("Warning: Canceled member deletion!\n");
         }
 
         // clear selected member
         this.selectedMember = null;
     }
 
+    public void returnBook() {
+        Integer rentId = findRentEntry();
+        Scanner sc = new Scanner(System.in);
+
+        if(rentId.equals(-1)) return;
+        if(this.selectedRentEntry.returned) {
+            System.out.println("-----------------------------------");
+            System.out.println("Message: The books is already returned!\n");
+            return;
+        }
+
+        System.out.println("-----------------------------------");
+        System.out.println("You are about to remove this entry:");
+        this.selectedRentEntry.showRentingDetails();
+        System.out.println();
+
+        System.out.print("librario\\Proceed? (Y|N) ");
+        String confirm = sc.nextLine().toLowerCase().trim();
+
+        if(confirm.equals("y") || confirm.equals("yes")) {
+            for(Integer bId : this.selectedRentEntry.bookId) {
+                this.selectedBook = findBookById(bId);
+                this.selectedBook.decreaseRentedBookCount(1);
+            }
+
+            this.selectedRentEntry.returnBook();
+            System.out.println("--------------------------------");
+            System.out.println("Message: Successfully returned book");
+            this.selectedRentEntry.showRentingDetails();
+            System.out.println();
+        } else {
+            System.out.println("--------------------------------");
+            System.out.println("Warning: Canceled returning book!\n");
+        }
+
+        // clear selected rent entry
+        this.selectedRentEntry = null;
+        this.selectedBook = null;
+    }
+
     // UTILS
+    public void activateMember() {
+        Integer memberId = findMember();
+
+        if(!(memberId == -1)) {
+            this.selectedMember.activate();
+            System.out.println("--------------------------");
+            System.out.println("Message: Activated member");
+            this.selectedMember.showsMemberDetail();
+            System.out.println();
+        } else {
+            System.out.println("--------------------------");
+            System.out.println("Message: Failed to activate member. Invalid ID.");
+        }
+    }
+
     public Integer findBook() {
         // make sure that there are books inside the list
         if(this.books.isEmpty()) {
-            System.out.println("\n-----------------------------------");
+            System.out.println("-----------------------------------");
             System.out.println("There are no books on your shelf. Start by adding one.\n");
             return -1;
         }
@@ -377,10 +496,21 @@ public class Library {
         return bookId;
     }
 
+    public Book findBookById(Integer id) {
+        Book book = null;
+        for(Book b: this.books) {
+            if(b.id.equals(id)) {
+                book = b;
+                break;
+            }
+        }
+        return book;
+    }
+
     public Integer findMember() {
         // make sure that there are books inside the list
-        if(this.members.isEmpty()) {
-            System.out.println("\n-----------------------------------");
+        if(this.rentEntryList.isEmpty()) {
+            System.out.println("-----------------------------------");
             System.out.println("There are no members registered. Start by adding one.\n");
             return -1;
         }
@@ -392,7 +522,7 @@ public class Library {
 
         boolean isMemberExist = false;
         // check if the books exist
-        for (Member member : this.members) {
+        for (Member member : this.rentEntryList) {
             if(member.id.equals(memberId)) {
                 isMemberExist = true;
                 this.selectedMember = member;
@@ -410,6 +540,39 @@ public class Library {
         return memberId;
     }
 
+    public Integer findRentEntry() {
+        // make sure that there are rent entry inside the list
+        if(this.rentEntryList.isEmpty()) {
+            System.out.println("-----------------------------------");
+            System.out.println("There are no entry. Start by adding one.\n");
+            return -1;
+        }
+
+        Scanner sc = new Scanner(System.in);
+        System.out.print("librario\\Enter rent ID: ");
+        Integer rentId = sc.nextInt();
+        sc.nextLine();
+
+        boolean isEntryExist = false;
+        // check if the books exist
+        for (RentingEntry rent : this.rentingEntryList) {
+            if(rent.id.equals(rentId)) {
+                isEntryExist = true;
+                this.selectedRentEntry = rent;
+                break;
+            }
+        }
+
+        // handle book id invalid or book does not exist
+        if(!isEntryExist) {
+            System.out.println("--------------------------------");
+            System.out.println("Warning: There are no rent entry with id " + rentId + "\n");
+            return -1;
+        }
+
+        return rentId;
+    }
+
     public void resetLibrary() {
         Scanner sc = new Scanner(System.in);
         System.out.println("---------------------------------------------");
@@ -420,7 +583,7 @@ public class Library {
 
         if(confirm.equals("y") || confirm.equals("yes")) {
             this.books = new ArrayList<>();
-            this.members = new ArrayList<>();
+            this.rentEntryList = new ArrayList<>();
             this.rentingEntryList = new ArrayList<>();
             this.selectedMember = null;
             this.selectedBook = null;

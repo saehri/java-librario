@@ -8,7 +8,7 @@ public class Main {
         String bookDatabasePath = "databases/book.json";
         String memberDatabasePath = "databases/member.json";
         String userPrefDatabasePath = "databases/user-data.json";
-        String transactionDatabasePath = "databases/transaction.json";
+        String rentEntryDatabasePath = "databases/renting-entry.json";
 
         // Initialize all app components and state
         Library library = new Library();
@@ -19,7 +19,7 @@ public class Main {
         // sync local state
         library.addBook(dm.readListDataFromLocaleStorage(bookDatabasePath, Book.class));
         library.addMember(dm.readListDataFromLocaleStorage(memberDatabasePath, Member.class));
-        library.addRentingEntry(dm.readListDataFromLocaleStorage(transactionDatabasePath, RentingEntry.class));
+        library.addRentingEntry(dm.readListDataFromLocaleStorage(rentEntryDatabasePath, RentingEntry.class));
         library.addUser(dm.readDataFromLocaleStorage(userPrefDatabasePath, User.class));
         // -------------- END OF SYNCING PROCESS
 
@@ -43,6 +43,12 @@ public class Main {
                 case "show book":
                     library.showBooks();
                     break;
+                case "show renting":
+                    library.showRentingEntry();
+                    break;
+                case "show renting all":
+                    library.showRentingEntry(true);
+                    break;
                 case "show member":
                     library.showMember("active");
                     break;
@@ -65,8 +71,14 @@ public class Main {
                 case "rm member":
                     library.removeMember();
                     break;
+                case "member activate":
+                    library.activateMember();
+                    break;
                 case "rent":
                     library.addRentingEntry();
+                    break;
+                case "return book":
+                    library.returnBook();
                     break;
                 case "reset library":
                     library.resetLibrary();
@@ -85,9 +97,9 @@ public class Main {
 
             // save progress to local storage
             dm.writeDataToLocaleStorage(library.books, bookDatabasePath);
-            dm.writeDataToLocaleStorage(library.members, memberDatabasePath);
+            dm.writeDataToLocaleStorage(library.rentEntryList, memberDatabasePath);
             dm.writeDataToLocaleStorage(library.currentUser, userPrefDatabasePath);
-            dm.writeDataToLocaleStorage(library.rentingEntryList, transactionDatabasePath);
+            dm.writeDataToLocaleStorage(library.rentingEntryList, rentEntryDatabasePath);
         }
     }
 }

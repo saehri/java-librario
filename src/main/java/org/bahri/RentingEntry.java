@@ -10,23 +10,30 @@ public class RentingEntry {
     public ArrayList<Integer> bookId;
     public String dueDate;
     public Integer memberId;
-    public Member member;
+    public Member renter;
+    public boolean returned;
 
-    public RentingEntry(Integer id, String dueDate, Member member, ArrayList<Integer> bookId) {
+    public RentingEntry(Integer id, String dueDate, Member renter, ArrayList<Integer> bookId) {
         this.id = id;
         this.bookId = bookId;
-        this.member = member;
-        this.memberId = member.id;
+        this.renter = renter;
+        this.memberId = renter.id;
         this.dueDate = dueDate;
+        this.returned = false;
     }
 
     public void showRentingDetails() {
+        if(this.returned) System.out.println("BOOK(S) HAS BEEN RETURNED.");
         System.out.println("ID: " + this.id);
         System.out.println("Due date: " + this.dueDate);
+        System.out.println("Returned: " + this.returned);
         System.out.println("Member ID: " + this.memberId);
-        System.out.println("Member name: " + this.member.name);
-        System.out.println("Member email: " + this.member.email);
-        System.out.println("-----------------------------------");
+        System.out.println("Member name: " + this.renter.name);
+        System.out.println("Member email: " + this.renter.email);
+    }
+
+    public void returnBook() {
+        this.returned = true;
     }
 
     // Constructor with parameters - This code is used by the jackson library to properly
@@ -36,11 +43,13 @@ public class RentingEntry {
                         @JsonProperty("bookId") ArrayList<Integer> bookId,
                         @JsonProperty("dueDate") String dueDate,
                         @JsonProperty("memberId") Integer memberId,
-                        @JsonProperty("member") Member member) {
+                        @JsonProperty("returned") boolean returned,
+                        @JsonProperty("member") Member renter) {
         this.id = id;
         this.bookId = bookId;
         this.dueDate = dueDate;
         this.memberId = memberId;
-        this.member = member;
+        this.renter = renter;
+        this.returned = returned;
     }
 }

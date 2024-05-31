@@ -28,6 +28,10 @@ public class Book {
         this.rentedBookCount += amount;
     }
 
+    public void decreaseRentedBookCount(Integer amount) {
+        this.rentedBookCount -= amount;
+    }
+
     public void showsBookDetails() {
         System.out.println("ID: " + this.id);
         System.out.println("Title: " + this.title);

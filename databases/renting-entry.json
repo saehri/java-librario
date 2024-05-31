@@ -1,0 +1,15 @@
+[ {
+  "id" : 0,
+  "bookId" : [ 0 ],
+  "dueDate" : "24 June 2024",
+  "memberId" : 0,
+  "returned" : true,
+  "renter" : {
+    "id" : 0,
+    "name" : "Saepul Bahri",
+    "email" : "",
+    "address" : "",
+    "isActive" : true,
+    "phoneNumber" : ""
+  }
+} ]

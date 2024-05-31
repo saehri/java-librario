@@ -1,1 +1,8 @@
-[ ]
+[ {
+  "id" : 0,
+  "name" : "Saepul Bahri",
+  "email" : "",
+  "address" : "",
+  "isActive" : true,
+  "phoneNumber" : ""
+} ]
